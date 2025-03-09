@@ -1,0 +1,60 @@
+import random
+
+class SlotMachine:
+    def __init__(self):
+        self.symbols = ['🍒', '🍋', '💎', '7️⃣', '🍀']
+        self.player_money = 1000
+
+    def display_balance(self):
+        print(f"\nYour current balance: ${self.player_money}")
+
+    def spin(self, bet):
+        if bet > self.player_money:
+            print("You don't have enough money for that bet!")
+            return
+        
+        if bet <= 0:
+            print("Bet must be greater than 0!")
+            return
+
+        self.player_money -= bet
+        result = [random.choice(self.symbols) for _ in range(3)]
+        print("\n" + " | ".join(result))
+
+        # Check for wins
+        if all(symbol == result[0] for symbol in result):
+            winnings = bet * 5
+            self.player_money += winnings
+            print(f"Jackpot! You won ${winnings}!")
+        elif result.count(result[0]) == 2 or result.count(result[1]) == 2:
+            winnings = bet * 2
+            self.player_money += winnings
+            print(f"Two of a kind! You won ${winnings}!")
+        else:
+            print("No luck this time!")
+
+def main():
+    game = SlotMachine()
+    print("Welcome to the Slot Machine!")
+    
+    while True:
+        game.display_balance()
+        
+        if game.player_money <= 0:
+            print("Game Over! You're out of money!")
+            break
+            
+        choice = input("\nEnter bet amount (or 'q' to quit): ")
+        
+        if choice.lower() == 'q':
+            print(f"\nThanks for playing! You left with ${game.player_money}")
+            break
+            
+        try:
+            bet = int(choice)
+            game.spin(bet)
+        except ValueError:
+            print("Please enter a valid number!")
+
+if __name__ == "__main__":
+    main()
